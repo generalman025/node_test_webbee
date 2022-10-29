@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CinemaSystem1663877813247 implements MigrationInterface {
   /**
@@ -31,7 +31,126 @@ export class CinemaSystem1663877813247 implements MigrationInterface {
    * As a cinema owner I dont want to configure the seating for every show
    */
   public async up(queryRunner: QueryRunner): Promise<void> {
-    throw new Error('TODO: implement migration in task 4');
+    await queryRunner.createTable(
+      new Table({
+        name: 'movie',
+        columns: [
+          {
+            name: 'id',
+            type: 'integer',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          { name: 'name', type: 'varchar' },
+        ]
+      }),
+    );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'show_room',
+        columns: [
+          {
+            name: 'id',
+            type: 'integer',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          { name: 'name', type: 'varchar' },
+        ]
+      }),
+    );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'time_slot',
+        columns: [
+          {
+            name: 'id',
+            type: 'integer',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          { name: 'start', type: 'timestamp' },
+          { name: 'end', type: 'timestamp' },
+        ]
+      }),
+    );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'movie_schedule',
+        columns: [
+          {
+            name: 'id',
+            type: 'integer',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          { name: 'movieId', type: 'integer' },
+          { name: 'showRoomId', type: 'integer' },
+          { name: 'timeSlotId', type: 'integer' },
+          { name: 'isFull', type: 'boolean' },
+        ]
+      }),
+    );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'seat_type',
+        columns: [
+          {
+            name: 'id',
+            type: 'integer',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          { name: 'name', type: 'varchar' },
+        ]
+      }),
+    );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'seat',
+        columns: [
+          {
+            name: 'id',
+            type: 'integer',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          { name: 'showRoomId', type: 'integer' },
+          { name: 'seatTypeId', type: 'integer' },
+          { name: 'location', type: 'varchar' },
+        ]
+      }),
+    );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'ticket',
+        columns: [
+          {
+            name: 'id',
+            type: 'integer',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          { name: 'movieScheduleId', type: 'integer' },
+          { name: 'seatId', type: 'integer' },
+          { name: 'userId', type: 'integer' },
+          { name: 'isAvailable', type: 'boolean' },
+        ]
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {}
