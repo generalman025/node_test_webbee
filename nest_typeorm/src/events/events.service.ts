@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { Get, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './entities/event.entity';
@@ -172,6 +172,20 @@ export class EventsService {
      */
   @Get('futureevents')
   async getFutureEventWithWorkshops() {
-    throw new Error('TODO task 2');
+    return this.eventRepository.find({
+      relations: ['workshops'],
+      where: [
+        {
+          workshops: {
+            start: MoreThan((new Date()).toISOString())
+          }
+        }
+      ],
+      order: {
+        workshops : {
+          id: 'ASC'
+        }
+      }
+    });
   }
 }
