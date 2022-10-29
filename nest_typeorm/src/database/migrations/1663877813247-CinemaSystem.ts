@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 
 export class CinemaSystem1663877813247 implements MigrationInterface {
   /**
@@ -149,6 +149,102 @@ export class CinemaSystem1663877813247 implements MigrationInterface {
           { name: 'userId', type: 'integer' },
           { name: 'isAvailable', type: 'boolean' },
         ]
+      }),
+    );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'user',
+        columns: [
+          {
+            name: 'id',
+            type: 'integer',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          { name: 'name', type: 'varchar' },
+        ]
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'movie_schedule',
+      new TableForeignKey({
+        columnNames: ['movieId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'movie',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'movie_schedule',
+      new TableForeignKey({
+        columnNames: ['showRoomId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'movie',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'movie_schedule',
+      new TableForeignKey({
+        columnNames: ['timeSlotId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'time_slot',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'seat',
+      new TableForeignKey({
+        columnNames: ['showRoomId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'show_room',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'seat',
+      new TableForeignKey({
+        columnNames: ['seatTypeId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'seat_type',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'ticket',
+      new TableForeignKey({
+        columnNames: ['movieScheduleId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'movie_schedule',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'ticket',
+      new TableForeignKey({
+        columnNames: ['seatId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'seat',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'ticket',
+      new TableForeignKey({
+        columnNames: ['userId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'user',
+        onDelete: 'CASCADE',
       }),
     );
   }
